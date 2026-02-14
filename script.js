@@ -1,8 +1,4 @@
 
-// Constants
-const YOUTUBE_VIDEO_ID = '3S3pdc_bYkY'; // Stardew Valley - Spring (The Valley Comes Alive) use a reliable cover if OST is blocked
-// Use a video that allows embedding.
-
 // Estado Global
 // Array de razones hardcodeado para evitar problemas de CORS al abrir index.html directamente
 const reasons = [
@@ -106,6 +102,7 @@ const noteContent = document.querySelector('.note-content');
 const closeNoteBtn = document.getElementById('close-note');
 const musicBtn = document.getElementById('music-btn');
 const musicIcon = document.getElementById('music-icon');
+const bgMusic = document.getElementById('bg-music');
 const counterDisplay = document.getElementById('counter');
 const particlesContainer = document.getElementById('particles-container');
 const jarLid = document.querySelector('.jar-lid');
@@ -119,9 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
     resetAvailableIndices();
     updateCounter();
     console.log(`Loaded ${reasons.length} reasons.`);
-
-    // Initialize YouTube
-    loadYouTubeAPI();
 
     // Event Listeners
     pullBtn.addEventListener('click', showReason);
@@ -262,76 +256,26 @@ function spawnHeart() {
     }, duration * 1000);
 }
 
-// YouTube API
-function loadYouTubeAPI() {
-    console.log("loadYouTubeAPI: Loading iframe_api script.");
-    const tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-}
 
-function onYouTubeIframeAPIReady() {
-    console.log("onYouTubeIframeAPIReady: API ready. Creating player.");
-
-    if (window.location.protocol === 'file:') {
-        console.warn("⚠️ Running correctly locally via file:// protocol, but YouTube API might block music. Deploy to GitHub Pages for best results.");
-    }
-
-    player = new YT.Player('player', {
-        height: '0',
-        width: '0',
-        videoId: YOUTUBE_VIDEO_ID,
-        playerVars: {
-            'autoplay': 0,
-            'controls': 0,
-            'loop': 1,
-            'playlist': YOUTUBE_VIDEO_ID, // Required for loop to work
-            'origin': window.location.origin // Best practice for GitHub Pages
-        },
-        events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange,
-            'onError': onPlayerError
-        }
-    });
-}
-
-function onPlayerReady(event) {
-    // Player is ready
-    console.log("Music player ready");
-    event.target.setVolume(50);
-}
-
-function onPlayerStateChange(event) {
-    console.log("Player State Changed: ", event.data);
-    // 1 = Playing, 2 = Paused, 0 = Ended
-}
-
-function onPlayerError(event) {
-    console.error("YouTube Player Error:", event.data);
-    alert("Error reproduciendo música: " + event.data + "\n(Puede ser un bloqueador de anuncios o que el video no permite insertarse)");
-}
 
 function toggleMusic() {
-    if (!player || typeof player.getPlayerState !== 'function') {
-        console.warn("toggleMusic: Player not ready or function missing.");
-        return;
-    }
-
-    if (isMusicPlaying) {
-        console.log("toggleMusic: Pausing video.");
-        player.pauseVideo();
+    if (bgMusic.paused) {
+        console.log("toggleMusic: Playing audio.");
+        bgMusic.volume = 0.5; // 50% volumen
+        bgMusic.play().then(() => {
+            musicIcon.classList.remove('fa-play');
+            musicIcon.classList.add('fa-pause');
+            isMusicPlaying = true;
+        }).catch(error => {
+            console.error("Audio playback error:", error);
+            alert("No se pudo reproducir la música. Asegúrate de que el archivo 'music.mp3' está en la carpeta.");
+        });
+    } else {
+        console.log("toggleMusic: Pausing audio.");
+        bgMusic.pause();
         musicIcon.classList.remove('fa-pause');
         musicIcon.classList.add('fa-play');
         isMusicPlaying = false;
-    } else {
-        console.log("toggleMusic: Playing video (unMute called).");
-        player.unMute(); // Ensure sound is on
-        player.playVideo();
-        musicIcon.classList.remove('fa-play');
-        musicIcon.classList.add('fa-pause');
-        isMusicPlaying = true;
     }
 }
 
