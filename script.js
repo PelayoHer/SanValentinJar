@@ -290,7 +290,9 @@ function onYouTubeIframeAPIReady() {
             'origin': window.location.origin // Best practice for GitHub Pages
         },
         events: {
-            'onReady': onPlayerReady
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange,
+            'onError': onPlayerError
         }
     });
 }
@@ -298,7 +300,17 @@ function onYouTubeIframeAPIReady() {
 function onPlayerReady(event) {
     // Player is ready
     console.log("Music player ready");
-    event.target.setVolume(50); // Set volume to 50%
+    event.target.setVolume(50);
+}
+
+function onPlayerStateChange(event) {
+    console.log("Player State Changed: ", event.data);
+    // 1 = Playing, 2 = Paused, 0 = Ended
+}
+
+function onPlayerError(event) {
+    console.error("YouTube Player Error:", event.data);
+    alert("Error reproduciendo música: " + event.data + "\n(Puede ser un bloqueador de anuncios o que el video no permite insertarse)");
 }
 
 function toggleMusic() {
