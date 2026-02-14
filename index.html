@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarro de Razones Digital</title>
+
+    <!-- Fuentes de Google: Dancing Script (manuscrita) y Quicksand (leíble) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Quicksand:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- FontAwesome para iconos (corazones, play, pause, etc.) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Contenedor de Partículas (Corazones de fondo) -->
+    <div id="particles-container"></div>
+
+    <!-- Control de Música (Botón flotante) -->
+    <div class="music-control">
+        <button id="music-btn" class="music-btn" aria-label="Toggle Music">
+            <i class="fas fa-play" id="music-icon"></i>
+        </button>
+        <div class="music-tooltip">Música de fondo</div>
+    </div>
+
+    <!-- Contenedor Principal: Centra todo el contenido -->
+    <div class="main-container">
+
+        <!-- El Tarro de los Deseos -->
+        <div class="jar-container">
+            <div class="jar-lid"></div> <!-- Tapa del tarro -->
+            <div class="jar-body">
+                <div class="jar-label">
+                    <i class="fas fa-heart"></i>
+                    <h1>100 Razones</h1>
+                    <p>Por las que te amo</p>
+                </div>
+                <!-- Botón Interactivo para sacar notas -->
+                <button id="pull-btn" class="pull-btn">
+                    Saca una Razón
+                </button>
+            </div>
+        </div>
+
+        <!-- Área de Visualización de la Nota (Inicialmente oculta) -->
+        <div id="note-display" class="note-display hidden">
+            <div class="note-content">
+                <span class="pin"></span> <!-- Chincheta decorativa -->
+                <p id="reason-text">...</p>
+                <button id="close-note" class="close-note-btn"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+
+        <!-- Contador de Razones Descubiertas -->
+        <div class="counter-display">
+            <span id="counter">0 / 0</span>
+        </div>
+
+    </div>
+
+    <!-- Modal de Regalo Final (Se muestra al acabar todas las razones) -->
+    <div id="gift-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>¡Misión Cumplida! 🎉</h2>
+            <p>Has leído las 100 razones por las que te amo.</p>
+            <p>Como recompensa, elige tu cita ideal:</p>
+
+            <div class="gift-options">
+                <div class="gift-card" onclick="selectGift('sushi')">
+                    <div class="icon">🍣</div>
+                    <h3>Buffet de Sushi</h3>
+                    <p>Nos ponemos finos a makis y nigiris hasta reventar.</p>
+                </div>
+
+                <div class="gift-card" onclick="selectGift('cats')">
+                    <div class="icon">🐈</div>
+                    <h3>Banquete Gatuno</h3>
+                    <p>Vamos a buscar colonias de gatos callejeros y les damos un festín de latitas ricas.</p>
+                </div>
+            </div>
+
+            <button class="close-modal-btn" onclick="closeModal()">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Reproductor de YouTube Invisible (Iframe API) -->
+    <div id="player"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
