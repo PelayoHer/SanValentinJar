@@ -132,6 +132,12 @@ function resetAvailableIndices() {
 // Lógica Principal: Mostrar una Razón
 function showReason() {
     console.log("showReason: Función llamada.");
+
+    // Intentar activar el contexto de audio si está suspendido (requisito del navegador)
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume().then(() => console.log("AudioContext reanudado con éxito."));
+    }
+
     // Si no quedan razones, mostrar regalo final
     if (availableIndices.length === 0) {
         console.log("showReason: All reasons shown. Showing gift modal.");
@@ -259,19 +265,33 @@ function spawnHeart() {
 
 
 function toggleMusic() {
+    console.log("toggleMusic: Estado actual del context: " + audioCtx.state);
+
+    // Intentar reanudar el audio context en cada interacción
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+
     if (bgMusic.paused) {
-        console.log("toggleMusic: Playing audio.");
-        bgMusic.volume = 0.5; // 50% volumen
+        console.log("toggleMusic: Intentando reproducir " + bgMusic.src);
+        bgMusic.volume = 0.5;
+
+        // Asegurarnos de que el audio cargue si hay problemas
+        if (bgMusic.readyState === 0) {
+            bgMusic.load();
+        }
+
         bgMusic.play().then(() => {
+            console.log("toggleMusic: Reproducción iniciada correctamente.");
             musicIcon.classList.remove('fa-play');
             musicIcon.classList.add('fa-pause');
             isMusicPlaying = true;
         }).catch(error => {
-            console.error("Audio playback error:", error);
-            alert("No se pudo reproducir la música. Asegúrate de que el archivo 'music.mp3' está en la carpeta.");
+            console.error("Error de reproducción de audio:", error);
+            alert("No se pudo reproducir la música. Revisa si el archivo 'music.mp3' está en la misma carpeta que el index.html.");
         });
     } else {
-        console.log("toggleMusic: Pausing audio.");
+        console.log("toggleMusic: Pausando música.");
         bgMusic.pause();
         musicIcon.classList.remove('fa-pause');
         musicIcon.classList.add('fa-play');
